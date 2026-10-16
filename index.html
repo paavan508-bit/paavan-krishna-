@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBITCOM // AI OMEGA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Default Theme: Aerospace Cyan */
+        :root, html[data-theme="cyan"] {
+            --bg-base: #04060a;
+            --bg-panel: #0b111e;
+            --bg-card: #0f172a;
+            --border-color: #1e3a8a44;
+            --accent-cyan: #38bdf8;
+            --accent-green: #34d399;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        /* Theme: Tactical Amber */
+        html[data-theme="amber"] {
+            --bg-base: #060401;
+            --bg-panel: #160f05;
+            --bg-card: #221607;
+            --border-color: #854d0e55;
+            --accent-cyan: #fbbf24;
+            --accent-green: #facc15;
+            --accent-red: #f87171;
+            --accent-yellow: #fde047;
+            --text-main: #fef08a;
+            --text-muted: #ca8a04;
+        }
+
+        /* Theme: Matrix Emerald */
+        html[data-theme="matrix"] {
+            --bg-base: #020604;
+            --bg-panel: #04130b;
+            --bg-card: #061d11;
+            --border-color: #16653455;
+            --accent-cyan: #34d399;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --accent-yellow: #facc15;
+            --text-main: #dcfce7;
+            --text-muted: #15803d;
+        }
+
+        /* Theme: Alert Crimson */
+        html[data-theme="crimson"] {
+            --bg-base: #060202;
+            --bg-panel: #160707;
+            --bg-card: #220a0a;
+            --border-color: #991b1b55;
+            --accent-cyan: #f87171;
+            --accent-green: #34d399;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --text-main: #fee2e2;
+            --text-muted: #b91c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Top Brand Header */
+        .top-navbar {
+            height: 65px;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .brand-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-cyan);
+        }
+
+        .omega-badge {
+            background-color: var(--accent-cyan);
+            color: var(--bg-base);
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-selector {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .system-status {
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Workspace Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Command Modules */
+        aside {
+            width: 280px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 15px;
+            gap: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-category {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            padding-left: 10px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            padding: 14px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-main);
+            background: transparent;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, var(--border-color), transparent);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .nav-item i {
+            color: var(--accent-cyan);
+            font-size: 1.1rem;
+        }
+
+        /* Main Content View Panels */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: var(--bg-base);
+            transition: background-color 0.3s;
+        }
+
+        .view-panel {
+            display: none;
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            gap: 25px;
+        }
+
+        .view-panel.active {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+        }
+
+        /* Left Column Cards */
+        .module-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-box {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .sub-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .sub-btn:hover, .sub-btn.active {
+            border-color: var(--accent-cyan);
+            background-color: var(--border-color);
+            color: var(--accent-cyan);
+        }
+
+        .telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding: 4px 0;
+        }
+
+        .telemetry-row b {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Right Radar/Display Screen */
+        .display-screen {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .radar-grid-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, var(--border-color) 31%);
+        }
+
+        .target-blip {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent-cyan), 0 0 30px var(--accent-cyan);
+            transform: translate(-50%, -50%);
+            transition: left 1s linear, top 1s linear, background-color 0.3s;
+        }
+
+        /* Telemetry Matrix Grid & AI Terminal View Overrides */
+        #processingView.view-panel, #aiConsoleView.view-panel {
+            display: none;
+            grid-template-columns: 1fr;
+        }
+        #processingView.view-panel.active, #aiConsoleView.view-panel.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge.red { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        .badge.yellow { background-color: rgba(251, 191, 36, 0.2); color: var(--accent-yellow); }
+        .badge.green { background-color: rgba(52, 211, 153, 0.2); color: var(--accent-green); }
+
+        /* AI Console Container */
+        .console-container {
+            flex: 1;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .chat-log {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ai-msg {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 85%;
+        }
+
+        .ai-msg.user {
+            align-self: flex-end;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .ai-msg.system {
+            align-self: flex-start;
+            width: 100%;
+        }
+
+        .ai-card {
+            background-color: var(--bg-base);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-cyan);
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .ai-card-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .ai-stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .ai-stat-row b {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .visual-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .visual-bar-fill {
+            height: 100%;
+            background-color: var(--accent-cyan);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .console-input-bar {
+            padding: 15px 20px;
+            background-color: var(--bg-base);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .console-input-bar input {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 6px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.95rem;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .console-input-bar input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .console-input-bar button {
+            background-color: var(--accent-cyan);
+            color: var(--bg-base);
+            border: none;
+            padding: 0 25px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Brand Header -->
+    <div class="top-navbar">
+        <div class="brand-area">
+            <button class="menu-toggle" id="menuToggleBtn"><i class="fa-solid fa-bars"></i></button>
+            <div class="brand-logo">
+                <i class="fa-solid fa-satellite"></i> ORBITCOM <span class="omega-badge">AI OMEGA</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <select class="theme-selector" id="themeSelector">
+                <option value="cyan">Theme: Aerospace Cyan</option>
+                <option value="amber">Theme: Tactical Amber</option>
+                <option value="matrix">Theme: Matrix Emerald</option>
+                <option value="crimson">Theme: Alert Crimson</option>
+            </select>
+            <div class="system-status">UPLINK: LIVE UPLINK ACTIVE</div>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <!-- Left Sidebar Command Modules -->
+        <aside id="sidebar">
+            <div class="sidebar-category">COMMAND MODULES</div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                <li class="nav-item active" id="navTracking" onclick="switchView('tracking', this)"><i class="fa-solid fa-satellite"></i><span>Live Satellite Tracker</span></li>
+                <li class="nav-item" id="navProcessing" onclick="switchView('processing', this)"><i class="fa-solid fa-flask"></i><span>Pollution & Data Processing</span></li>
+                <li class="nav-item" id="navAiConsole" onclick="switchView('aiConsole', this)"><i class="fa-solid fa-robot"></i><span>AI Intelligence & Visual Core</span></li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main>
+            <!-- View 1: Live Satellite Tracker -->
+            <div class="view-panel active" id="trackingView">
+                <div class="module-column">
+                    <div class="card-box">
+                        <div class="card-title">Select Satellite</div>
+                        <button class="sub-btn active" id="btnIss" onclick="switchSatellite('ISS (Space Station)', '25544', this)">ISS (Space Station)</button>
+                        <button class="sub-btn" id="btnNoaa" onclick="switchSatellite('NOAA 18 (Weather)', '28654', this)">NOAA 18 (Weather)</button>
+                        <button class="sub-btn" id="btnHubble" onclick="switchSatellite('Hubble Telescope', '20580', this)">Hubble Telescope</button>
+                    </div>
+
+                    <div class="card-box">
+                        <div class="card-title">TELEMETRY TELECAST</div>
+                        <div class="telemetry-row"><span>Target:</span><b id="satName">ISS (ZARYA)</b></div>
+                        <div class="telemetry-row"><span>Latitude:</span><b id="satLat">--</b></div>
+                        <div class="telemetry-row"><span>Longitude:</span><b id="satLng">--</b></div>
+                        <div class="telemetry-row"><span>Altitude:</span><b id="satAlt">--</b></div>
+                        <div class="telemetry-row"><span>Velocity:</span><b id="satVel">--</b></div>
+                    </div>
+                </div>
+
+                <div class="display-screen">
+                    <div class="radar-grid-lines"></div>
+                    <div class="target-blip" id="targetBlip" style="left: 50%; top: 50%;"></div>
+                    <div style="position: absolute; bottom: 20px; left: 20px; font-size: 0.8rem; color: var(--text-muted); border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 4px;" id="activeRadarLabel">
+                        TACTICAL MAP GRID // ISS
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 2: Pollution & Data Processing -->
+            <div class="view-panel" id="processingView">
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <span class="card-title">NO2 CONCENTRATION</span>
+                        <span class="metric-value" id="no2Val">42.8 µg/m³</span>
+                        <span class="badge red" id="no2Badge">Above WHO Guideline</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="card-title">AEROSOL INDEX</span>
+                        <span class="metric-value" id="aiVal">1.14 AI</span>
+                        <span class="badge yellow" id="aiBadge">Elevated Activity</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="card-title">CO2 COLUMN DENSITY</span>
+                        <span class="metric-value" id="co2Val">426.0 ppm</span>
+                        <span class="badge red" id="co2Badge">Current Baseline</span>
+                    </div>
+                </div>
+                <div class="card-box" style="margin-top: 10px;">
+                    <div class="ai-card-header"><span>SYSTEM LOGS // ATMOSPHERIC SWEEP</span><span style="color:var(--accent-green);">ACTIVE</span></div>
+                    <div id="consoleLogs" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5;">
+                        [SYSTEM] Initializing matrix telemetry nodes...<br>
+                        [OK] Global atmospheric baselines loaded successfully.
+                    </div>
+                    <button class="sub-btn" id="runSweepBtn" onclick="runDataProcessing()" style="margin-top: 15px; width: fit-content;">Execute Manual Sweep</button>
+                </div>
+            </div>
+
+            <!-- View 3: AI Intelligence & Visual Core -->
+            <div class="view-panel" id="aiConsoleView">
+                <div class="console-container">
+                    <div class="chat-log" id="aiChatLog">
+                        <div class="ai-msg system">
+                            <div class="ai-card">
+                                <div class="ai-card-header"><span>AI OMEGA CORE INITIALIZED</span><span style="color:var(--accent-green);">READY</span></div>
+                                <div class="ai-card-desc" style="margin-top:5px; color:var(--text-muted);">
+                                    Enter any region, city (e.g. "Bowrampet", "Krishna Raja Puram"), satellite name, or SDG query to fetch live telemetry.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="console-input-bar">
+                        <input type="text" id="aiUserInput" placeholder="Enter command or location telemetry query...">
+                        <button id="sendAiBtn" onclick="processAICommand()">TRANSMIT</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.3/satellite.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
